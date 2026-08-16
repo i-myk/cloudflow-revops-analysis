@@ -1,5 +1,3 @@
-# cloudflow-revops-analysis
-Revenue Operations analysis of Q2 performance, sales funnel, forecasting, retention, and Q3 pipeline using SQL and BigQuery.
 # CloudFlow Revenue Operations Analysis
 
 Revenue Operations analysis of Q2 2026 performance and Q3 pipeline for a fictional B2B SaaS company.
