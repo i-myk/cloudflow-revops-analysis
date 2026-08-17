@@ -6,7 +6,7 @@ The goal of this project was to understand why CloudFlow missed its Q2 New ARR t
 
 ## Business Problem
 
-CloudFlow had a Q2 New ARR target of $1.5M but generated $1.12M, reaching 74.7% of target and leaving a $380K revenue gap.
+CloudFlow had a Q2 New ARR target of $1.5M but generated $1.12M, reaching 74.67% of target and leaving a $380K revenue gap.
 
 The analysis focused on:
 
@@ -20,7 +20,7 @@ The analysis focused on:
 
 ## Key Findings
 
-- Q2 New ARR: **$1.12M vs. $1.50M target (74.7% attainment)**
+- Q2 New ARR: **$1.12M vs. $1.50M target 74.67% attainment)**
 - Revenue gap: **$380K**
 - Small Business win rate: **28%**
 - Mid-Market win rate: **20%**, with higher deal values
