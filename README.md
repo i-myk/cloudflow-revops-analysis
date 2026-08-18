@@ -72,6 +72,1185 @@ The first questions were:
 
 ## Why I Started Here
 
-Without establishing the revenue baseline, it would be difficult to evaluate whether problems in the funnel, forecasting, or customer segments were materially affecting company performance.
-
+Without establishing the revenue baseline, it would be difficult to evaluate whether problems in the funnel, forecasting, or customer segments were materially
+affecting company performance.
 The baseline gives me a clear starting point for the rest of the analysis.
+
+
+I first calculated the company target and Actual New ARR separately.
+
+### SQL
+
+```sql
+WITH target AS (
+
+  SELECT
+    SUM(New_ARR_Target) AS company_target
+  FROM `fifth-flash-489402-h9.cloudflow_revops.targets`
+  WHERE Quarter = 'Q2 2026'
+    AND Target_Level = 'Company'
+
+),
+
+actual AS (
+
+  SELECT
+    SUM(Opportunity_ARR) AS actual_new_arr
+  FROM `fifth-flash-489402-h9.cloudflow_revops.opportunities`
+  WHERE Analysis_Quarter = 'Q2 2026'
+    AND Quarter_End_Status = 'Closed Won'
+
+)
+
+SELECT
+  company_target,
+  actual_new_arr,
+  company_target - actual_new_arr AS revenue_gap,
+  ROUND(actual_new_arr / company_target * 100,2) AS attainment_pct
+FROM target
+CROSS JOIN actual;
+```
+
+## Why I Used Two CTEs
+
+The `target` CTE calculates the company-level Q2 target.
+
+The `actual` CTE calculates ARR from opportunities that actually became `Closed Won`.
+
+Both CTEs return one aggregated row, so I used a `CROSS JOIN` to place the target and actual numbers on the same row.
+
+That allowed me to calculate:
+
+- Revenue Gap
+- Target Attainment
+
+## Result
+
+| Metric | Result |
+|---|---:|
+| Q2 Target | $1.50M |
+| Actual New ARR | $1.12M |
+| Revenue Gap | $380K |
+| Target Attainment | 74.67% |
+
+## What I Learned
+
+CloudFlow achieved only **74.67% of its Q2 New ARR target**.
+
+The company missed its goal by **$380K**.
+
+At this point I knew the size of the problem, but I still did not know **why** the target was missed.
+
+The next step was to investigate opportunity and pipeline outcomes.
+
+---
+
+# Step 2: Understand Opportunity Outcomes and Pipeline Health
+
+After identifying the revenue gap, I wanted to understand what happened to the Q2 opportunity pipeline.
+
+I analyzed:
+
+- Quarter-end opportunity status
+- Current pipeline stage
+- Closed Won vs. Open-Slipped opportunities
+- Opportunity ARR
+- Average deal size
+
+### Example SQL
+
+```sql
+SELECT
+  Quarter_End_Status,
+  COUNT(*) AS opportunities,
+  SUM(Opportunity_ARR) AS total_arr,
+  ROUND(AVG(Opportunity_ARR),2) AS avg_deal_size
+FROM `fifth-flash-489402-h9.cloudflow_revops.opportunities`
+WHERE Analysis_Quarter = 'Q2 2026'
+GROUP BY Quarter_End_Status
+ORDER BY total_arr DESC;
+```
+
+## Why I Analyzed This
+
+A company can have a large pipeline and still miss revenue targets if opportunities:
+
+- remain open,
+- slip into future periods,
+- are removed,
+- or become Closed Lost.
+
+Pipeline size alone does not guarantee revenue.
+
+I needed to understand the **quality and final outcome of the pipeline**, not simply how many opportunities existed.
+
+---
+
+# Step 3: Analyze Lead Quality
+
+The next question was whether Marketing generated enough high-quality leads.
+
+I started by looking at:
+
+- Number of leads by source
+- Average lead score by source
+
+### SQL
+
+```sql
+SELECT
+  Lead_Source_Raw,
+  COUNT(*) AS leads,
+  ROUND(AVG(Lead_Score),2) AS avg_lead_score
+FROM `fifth-flash-489402-h9.cloudflow_revops.leads`
+WHERE Lead_Cohort_Quarter = 'Q2 2026'
+GROUP BY Lead_Source_Raw
+ORDER BY avg_lead_score DESC;
+```
+
+## Why I Analyzed Lead Quality
+
+A large number of leads is not necessarily valuable.
+
+A source may generate many leads, but those leads may fail to progress through the funnel.
+
+Therefore, I wanted to compare **lead volume with downstream conversion performance**.
+
+---
+
+# Step 4: Measure MQL → SQL Conversion
+
+Next, I analyzed how effectively leads progressed through the qualification process.
+
+The funnel at this stage was:
+
+**Lead → MQL → SQL**
+
+### SQL
+
+```sql
+SELECT
+  Lead_Source_Raw,
+  COUNT(*) AS total_leads,
+  COUNT(MQL_Date) AS mqls,
+  COUNT(SQL_Date) AS sqls,
+
+  ROUND(COUNT(MQL_Date) * 100.0 / COUNT(*),2) AS lead_to_mql_rate,
+
+  ROUND(COUNT(SQL_Date) * 100.0 / COUNT(*),2) AS lead_to_sql_rate,
+
+  ROUND(COUNT(SQL_Date) * 100.0 / COUNT(MQL_Date),2) AS mql_to_sql_rate
+
+FROM `fifth-flash-489402-h9.cloudflow_revops.leads`
+
+WHERE Lead_Cohort_Quarter = 'Q2 2026'
+
+GROUP BY Lead_Source_Raw
+
+ORDER BY mql_to_sql_rate DESC;
+```
+
+## How I Think About This Funnel
+
+- **Lead** = potential customer entered the funnel
+- **MQL** = Marketing considered the lead qualified
+- **SQL** = Sales considered the lead worth pursuing
+
+The conversion rates help identify where qualification is breaking down.
+
+A source may generate many leads but still perform poorly if only a small portion reaches SQL.
+
+---
+
+# Step 5: Measure SQL → Opportunity Conversion
+
+Getting an SQL is still not the final goal.
+
+The next important question was:
+
+> Which lead sources actually create real Sales opportunities?
+
+### SQL
+
+```sql
+SELECT
+  Lead_Source_Raw,
+  COUNT(*) AS total_leads,
+  COUNT(MQL_Date) AS mqls,
+  COUNT(SQL_Date) AS sqls,
+  COUNT(Linked_Opportunity_ID) AS opportunities,
+
+  ROUND(COUNT(MQL_Date) * 100.0 / COUNT(*),2) AS lead_to_mql_rate,
+
+  ROUND(COUNT(SQL_Date) * 100.0 / COUNT(*),2) AS lead_to_sql_rate,
+
+  ROUND(COUNT(SQL_Date) * 100.0 / COUNT(MQL_Date),2) AS mql_to_sql_rate,
+
+  ROUND(COUNT(Linked_Opportunity_ID) * 100.0 / COUNT(SQL_Date),2)
+    AS sql_to_opportunity_rate
+
+FROM `fifth-flash-489402-h9.cloudflow_revops.leads`
+
+WHERE Lead_Cohort_Quarter = 'Q2 2026'
+
+GROUP BY Lead_Source_Raw
+
+ORDER BY sql_to_opportunity_rate DESC;
+```
+
+## Why SQL → Opportunity Matters
+
+This metric connects Marketing qualification to actual Sales pipeline creation.
+
+A source can produce many SQLs, but if those SQLs rarely become opportunities, the source may not be producing strong commercial intent.
+
+This helped me move beyond simple lead volume and evaluate **lead quality based on actual pipeline creation**.
+
+---
+
+# Step 6: Analyze the Full Lead → Opportunity → Closed Won Funnel
+
+I then connected the `leads` and `opportunities` tables.
+
+The goal was to analyze the full funnel:
+
+**Lead → Opportunity → Closed Won**
+
+### SQL
+
+```sql
+SELECT
+  l.Lead_Source_Raw,
+
+  COUNT(*) AS total_leads,
+
+  COUNT(l.Linked_Opportunity_ID) AS opportunities,
+
+  COUNT(
+    CASE
+      WHEN o.Quarter_End_Status = 'Closed Won' THEN 1
+    END
+  ) AS closed_won,
+
+  ROUND(
+    COUNT(l.Linked_Opportunity_ID) * 100.0 / COUNT(*),
+    2
+  ) AS lead_to_opp_rate,
+
+  ROUND(
+    COUNT(
+      CASE
+        WHEN o.Quarter_End_Status = 'Closed Won' THEN 1
+      END
+    ) * 100.0 / COUNT(*),
+    2
+  ) AS lead_to_won_rate,
+
+  ROUND(
+    COUNT(
+      CASE
+        WHEN o.Quarter_End_Status = 'Closed Won' THEN 1
+      END
+    ) * 100.0 / COUNT(l.Linked_Opportunity_ID),
+    2
+  ) AS opp_to_won_rate
+
+FROM `fifth-flash-489402-h9.cloudflow_revops.leads` AS l
+
+LEFT JOIN `fifth-flash-489402-h9.cloudflow_revops.opportunities` AS o
+  ON l.Linked_Opportunity_ID = o.Opportunity_ID
+
+WHERE l.Lead_Cohort_Quarter = 'Q2 2026'
+
+GROUP BY l.Lead_Source_Raw
+
+ORDER BY opp_to_won_rate DESC;
+```
+
+## Why I Used a LEFT JOIN
+
+The `leads` table is the starting point of this analysis.
+
+Not every lead has an opportunity.
+
+Using a `LEFT JOIN` allows me to keep all leads in the analysis, including leads that never progressed to an opportunity.
+
+If I used an `INNER JOIN`, those non-converting leads would disappear and the funnel conversion rates could look artificially better.
+
+---
+
+# Step 7: Measure Sales Cycle by Lead Source
+
+Conversion rate tells me **whether** leads close.
+
+Sales cycle tells me **how long** they take to close.
+
+### SQL
+
+```sql
+SELECT
+  l.Lead_Source_Raw,
+  COUNT(*) AS closed_won_deals,
+
+  ROUND(
+    AVG(
+      DATE_DIFF(
+        o.Actual_Close_Date,
+        l.Lead_Created_Date,
+        DAY
+      )
+    ),
+    2
+  ) AS avg_days_to_close
+
+FROM `fifth-flash-489402-h9.cloudflow_revops.leads` l
+
+JOIN `fifth-flash-489402-h9.cloudflow_revops.opportunities` o
+  ON l.Linked_Opportunity_ID = o.Opportunity_ID
+
+WHERE l.Lead_Cohort_Quarter = 'Q2 2026'
+  AND o.Quarter_End_Status = 'Closed Won'
+  AND o.Actual_Close_Date >= l.Lead_Created_Date
+
+GROUP BY l.Lead_Source_Raw
+
+ORDER BY closed_won_deals DESC;
+```
+
+## Why Sales Cycle Matters
+
+Two lead sources can have similar win rates but very different time-to-close.
+
+A source that closes faster can contribute revenue sooner and make quarterly forecasting more predictable.
+
+---
+
+# Step 8: Compare Customer Segment Performance
+
+Next, I wanted to understand whether performance differed between:
+
+- Small Business
+- Mid-Market
+
+### SQL
+
+```sql
+SELECT
+  Customer_Segment,
+  COUNT(*) AS opportunities,
+
+  COUNT(
+    CASE
+      WHEN Quarter_End_Status = 'Closed Won' THEN 1
+    END
+  ) AS closed_won,
+
+  SUM(
+    CASE
+      WHEN Quarter_End_Status = 'Closed Won'
+      THEN Opportunity_ARR
+      ELSE 0
+    END
+  ) AS won_arr,
+
+  ROUND(
+    COUNT(
+      CASE
+        WHEN Quarter_End_Status = 'Closed Won' THEN 1
+      END
+    ) * 100.0 / COUNT(*),
+    2
+  ) AS win_rate,
+
+  ROUND(AVG(Opportunity_ARR),2) AS avg_deal_size
+
+FROM `fifth-flash-489402-h9.cloudflow_revops.opportunities`
+
+WHERE Analysis_Quarter = 'Q2 2026'
+
+GROUP BY Customer_Segment
+
+ORDER BY won_arr DESC;
+```
+
+## Result
+
+- **Small Business Win Rate:** 28%
+- **Mid-Market Win Rate:** 20%
+
+In the dashboard analysis, average won deal ARR was approximately:
+
+- **Small Business:** $15K
+- **Mid-Market:** $70K
+
+## What I Learned
+
+Small Business converted opportunities at a higher rate.
+
+However, Mid-Market deals were substantially more valuable.
+
+This created an important tradeoff:
+
+> Small Business delivered better conversion, while Mid-Market represented significantly more ARR per successful deal.
+
+Therefore, improving execution on Mid-Market opportunities could have a large revenue impact.
+
+---
+
+# Step 9: Evaluate Account Executive Performance
+
+I also analyzed performance at the individual Account Executive level.
+
+### SQL
+
+```sql
+SELECT
+  Account_Executive,
+  COUNT(*) AS opportunities,
+
+  COUNT(
+    CASE
+      WHEN Quarter_End_Status = 'Closed Won' THEN 1
+    END
+  ) AS closed_won,
+
+  ROUND(
+    SUM(
+      CASE
+        WHEN Quarter_End_Status = 'Closed Won'
+        THEN Opportunity_ARR
+      END
+    ),
+    2
+  ) AS closed_won_arr,
+
+  ROUND(
+    COUNT(
+      CASE
+        WHEN Quarter_End_Status = 'Closed Won' THEN 1
+      END
+    ) * 100.0 / COUNT(*),
+    2
+  ) AS win_rate,
+
+  ROUND(AVG(Opportunity_ARR),2) AS avg_deal_size
+
+FROM `fifth-flash-489402-h9.cloudflow_revops.opportunities`
+
+WHERE Analysis_Quarter = 'Q2 2026'
+
+GROUP BY Account_Executive
+
+ORDER BY closed_won DESC;
+```
+
+## Why I Analyzed AE Performance
+
+Company-level performance can hide differences between individual sellers.
+
+AE-level analysis helps identify:
+
+- stronger win rates,
+- higher ARR production,
+- larger average deals,
+- and potential coaching opportunities.
+
+---
+
+# Step 10: Evaluate Forecast Reliability
+
+The next question was:
+
+> How closely did Sales forecasts match actual revenue?
+
+### SQL
+
+```sql
+SELECT
+  Forecast_Category_at_Snapshot,
+  COUNT(*) AS opportunities,
+
+  ROUND(SUM(Sales_Forecast_ARR),2) AS forecast_arr,
+
+  ROUND(SUM(Final_Actual_ARR),2) AS actual_arr,
+
+  ROUND(
+    SUM(Final_Actual_ARR) - SUM(Sales_Forecast_ARR),
+    2
+  ) AS variance,
+
+  ROUND(
+    SUM(Final_Actual_ARR) * 100 /
+    SUM(Sales_Forecast_ARR),
+    2
+  ) AS forecast_accuracy
+
+FROM `fifth-flash-489402-h9.cloudflow_revops.forecast_snapshots`
+
+GROUP BY Forecast_Category_at_Snapshot
+
+ORDER BY forecast_arr DESC;
+```
+
+## Key Result
+
+Forecast ARR realization showed:
+
+- **Closed:** 100%
+- **Pipeline:** ~70%
+- **Commit:** ~13%
+- **Best Case:** ~5%
+
+## What I Learned
+
+The low realization of Commit forecast ARR indicated that the forecast categories were not reliably representing actual revenue outcomes.
+
+A deal classified as Commit should normally represent a high-confidence opportunity.
+
+Low realization suggests that forecasting was overly optimistic or Commit criteria were not strict enough.
+
+This became one of the main Revenue Operations findings.
+
+---
+
+# Step 11: Analyze Deal Slippage
+
+Forecasting is not only about whether a deal eventually closes.
+
+Timing also matters.
+
+A deal that closes after its expected date can cause a company to miss a quarterly target even if the deal eventually becomes Closed Won.
+
+I defined a slipped deal as:
+
+**Actual Close Date > Expected Close Date**
+
+### Overall Slippage SQL
+
+```sql
+SELECT
+  COUNT(*) AS total_closed_deals,
+
+  COUNT(
+    CASE
+      WHEN Actual_Close_Date > Expected_Close_Date
+      THEN 1
+    END
+  ) AS slipped_deals,
+
+  ROUND(
+    COUNT(
+      CASE
+        WHEN Actual_Close_Date > Expected_Close_Date
+        THEN 1
+      END
+    ) * 100.0 / COUNT(*),
+    2
+  ) AS slippage_rate
+
+FROM `fifth-flash-489402-h9.cloudflow_revops.opportunities`
+
+WHERE Analysis_Quarter = 'Q2 2026'
+  AND Quarter_End_Status = 'Closed Won';
+```
+
+## Result
+
+Overall Q2 Closed Won deal slippage was approximately:
+
+**44.74%**
+
+This means almost half of the opportunities that eventually became Closed Won closed later than originally expected.
+
+---
+
+## Deal Slippage by Customer Segment
+
+I then compared slippage between customer segments.
+
+```sql
+SELECT
+  Customer_Segment,
+  COUNT(*) AS closed_won_deals,
+
+  COUNT(
+    CASE
+      WHEN Actual_Close_Date > Expected_Close_Date
+      THEN 1
+    END
+  ) AS slipped_deals,
+
+  ROUND(
+    COUNT(
+      CASE
+        WHEN Actual_Close_Date > Expected_Close_Date
+        THEN 1
+      END
+    ) * 100.0 / COUNT(*),
+    2
+  ) AS slippage_rate,
+
+  ROUND(
+    AVG(
+      CASE
+        WHEN Actual_Close_Date > Expected_Close_Date
+        THEN DATE_DIFF(
+          Actual_Close_Date,
+          Expected_Close_Date,
+          DAY
+        )
+      END
+    ),
+    2
+  ) AS avg_days_slipped
+
+FROM `fifth-flash-489402-h9.cloudflow_revops.opportunities`
+
+WHERE Analysis_Quarter = 'Q2 2026'
+  AND Quarter_End_Status = 'Closed Won'
+
+GROUP BY Customer_Segment
+
+ORDER BY slippage_rate DESC;
+```
+
+## Result
+
+| Segment | Slippage Rate |
+|---|---:|
+| Mid-Market | 60.00% |
+| Small Business | 39.29% |
+
+## What I Learned
+
+Mid-Market had the highest deal slippage.
+
+This is especially important because Mid-Market deals also have much larger average ARR.
+
+A delayed $70K opportunity has a much larger impact on quarterly revenue than a delayed $15K opportunity.
+
+This made Mid-Market pipeline execution one of the major areas to monitor going into Q3.
+
+---
+
+# Step 12: Analyze Customer Retention and Churn
+
+New ARR explains only one part of revenue performance.
+
+Revenue Operations also needs to understand what happens to existing customers.
+
+I analyzed:
+
+- Renewal ARR
+- Renewal Rate
+- Churn Rate
+- Expansion ARR
+- Contraction ARR
+- Ending ARR
+- Net Revenue Retention
+- Churn reasons
+
+---
+
+## Net Revenue Retention
+
+### SQL
+
+```sql
+SELECT
+  ROUND(
+    SUM(Ending_ARR) * 100.0 /
+    SUM(ARR_Due_for_Renewal),
+    2
+  ) AS net_revenue_retention
+
+FROM `fifth-flash-489402-h9.cloudflow_revops.customers_renewals_q2`;
+```
+
+## Result
+
+**Overall NRR = 93.06%**
+
+## How I Interpret NRR
+
+NRR compares the ARR remaining at the end of the renewal period with the ARR that originally came up for renewal.
+
+An NRR below 100% means that churn and contraction exceeded expansion.
+
+CloudFlow ended the period with less recurring revenue than it started with from this renewal cohort.
+
+---
+
+# Step 13: Identify the Main Churn Reasons
+
+Knowing the churn rate is useful, but Revenue Operations also needs to understand **why customers leave**.
+
+### SQL
+
+```sql
+SELECT
+  Churn_Reason,
+  COUNT(*) AS churned_customers,
+  SUM(Churned_ARR) AS churned_arr
+
+FROM `fifth-flash-489402-h9.cloudflow_revops.customers_renewals_q2`
+
+WHERE Renewal_Status = 'Churned'
+
+GROUP BY Churn_Reason
+
+ORDER BY churned_arr DESC;
+```
+
+## Result
+
+| Churn Reason | Churned ARR |
+|---|---:|
+| Budget reduction | $162K |
+| Low adoption | $128K |
+| Reason not provided | $52K |
+| Other | $18K |
+
+## What I Learned
+
+The two largest churn drivers were:
+
+1. **Budget Reduction**
+2. **Low Adoption**
+
+Budget-related churn may be difficult to prevent completely.
+
+Low adoption, however, represents a potentially actionable customer-success problem.
+
+Customers who are not using the product enough should be identified before renewal so Customer Success can intervene earlier.
+
+The missing churn reasons also indicate a small data-quality opportunity: churn reason should ideally be captured consistently.
+
+---
+
+# Step 14: Evaluate the Q3 Opening Pipeline
+
+After understanding Q2 performance, I moved to the forward-looking question:
+
+> Does CloudFlow have enough pipeline to reach the Q3 target?
+
+### Overall Pipeline SQL
+
+```sql
+SELECT
+  COUNT(*) AS opportunities,
+  SUM(Opportunity_ARR) AS pipeline_arr
+
+FROM `fifth-flash-489402-h9.cloudflow_revops.q3_opening_pipeline`;
+```
+
+## Result
+
+- **Q3 Opening Opportunities:** 77
+- **Opening Pipeline ARR:** $4.40M
+- **Q3 Target:** $1.60M
+
+---
+
+## Pipeline Coverage
+
+### SQL
+
+```sql
+SELECT
+  SUM(Opportunity_ARR) AS pipeline_arr,
+  1600000 AS q3_target,
+
+  ROUND(
+    SUM(Opportunity_ARR) / 1600000,
+    2
+  ) AS pipeline_coverage
+
+FROM `fifth-flash-489402-h9.cloudflow_revops.q3_opening_pipeline`;
+```
+
+## Result
+
+**Pipeline Coverage = 2.75x**
+
+## What Pipeline Coverage Means
+
+CloudFlow entered Q3 with pipeline equal to approximately **2.75 times the revenue target**.
+
+However, this does not mean CloudFlow will automatically hit the target.
+
+Q2 analysis showed:
+
+- Deal slippage
+- Low Commit realization
+- Different win rates across segments
+
+Therefore, the full $4.40M pipeline should not be treated as expected revenue.
+
+This is why I created forecast scenarios.
+
+---
+
+# Step 15: Build Q3 Forecast Scenarios
+
+Instead of using one forecast number, I created three scenarios:
+
+- Conservative
+- Expected
+- Optimistic
+
+Each scenario applies different probabilities to:
+
+- Commit
+- Best Case
+- Pipeline
+
+The purpose is not to say exactly what will happen, but to understand a reasonable range of possible outcomes.
+
+---
+
+## Conservative Scenario
+
+Assumptions:
+
+- Commit = 50%
+- Best Case = 20%
+- Pipeline = 5%
+
+## Expected Scenario
+
+Assumptions:
+
+- Commit = 70%
+- Best Case = 40%
+- Pipeline = 10%
+
+## Optimistic Scenario
+
+Assumptions:
+
+- Commit = 90%
+- Best Case = 60%
+- Pipeline = 25%
+
+### SQL
+
+```sql
+SELECT
+
+  ROUND(
+    SUM(
+      CASE
+        WHEN Forecast_Category = 'Commit'
+          THEN Opportunity_ARR * 0.50
+        WHEN Forecast_Category = 'Best Case'
+          THEN Opportunity_ARR * 0.20
+        WHEN Forecast_Category = 'Pipeline'
+          THEN Opportunity_ARR * 0.05
+        ELSE 0
+      END
+    ),
+    2
+  ) AS conservative_forecast,
+
+  ROUND(
+    SUM(
+      CASE
+        WHEN Forecast_Category = 'Commit'
+          THEN Opportunity_ARR * 0.70
+        WHEN Forecast_Category = 'Best Case'
+          THEN Opportunity_ARR * 0.40
+        WHEN Forecast_Category = 'Pipeline'
+          THEN Opportunity_ARR * 0.10
+        ELSE 0
+      END
+    ),
+    2
+  ) AS expected_forecast,
+
+  ROUND(
+    SUM(
+      CASE
+        WHEN Forecast_Category = 'Commit'
+          THEN Opportunity_ARR * 0.90
+        WHEN Forecast_Category = 'Best Case'
+          THEN Opportunity_ARR * 0.60
+        WHEN Forecast_Category = 'Pipeline'
+          THEN Opportunity_ARR * 0.25
+        ELSE 0
+      END
+    ),
+    2
+  ) AS optimistic_forecast
+
+FROM `fifth-flash-489402-h9.cloudflow_revops.q3_opening_pipeline`;
+```
+
+## Result
+
+| Scenario | Q3 Forecast ARR |
+|---|---:|
+| Conservative | $1.233M |
+| Expected | $1.978M |
+| Optimistic | $2.813M |
+
+## What I Learned
+
+The Expected and Optimistic scenarios exceed the **$1.60M Q3 target**.
+
+However, the Conservative scenario falls below target.
+
+This means CloudFlow has enough pipeline on paper, but execution quality matters.
+
+Q3 performance will depend heavily on:
+
+- preventing deal slippage,
+- focusing on high-value late-stage opportunities,
+- improving forecast discipline,
+- and converting pipeline into actual Closed Won ARR.
+
+---
+
+
+# Final Looker Studio Dashboard
+
+After completing the SQL analysis, I built a Looker Studio dashboard to present the most important findings in a format that leadership could review quickly.
+
+The dashboard includes:
+
+- Q2 ARR Target
+- Actual New ARR
+- Target Attainment
+- Revenue Gap
+- Overall NRR
+- Win Rate by Customer Segment
+- Average Won Deal ARR by Segment
+- Deal Slippage by Segment
+- Forecast ARR Realization
+- Churned ARR by Reason
+- Q3 Forecast Scenarios
+
+<!-- Replace the path below with your actual dashboard image path -->
+
+![CloudFlow Revenue Operations Dashboard](images/CloudFlow_RevOps_Dashboard.png)
+
+---
+
+# Key Findings
+
+## Q2 Revenue Performance
+
+CloudFlow generated **$1.12M in New ARR against a $1.50M target**.
+
+Target attainment was **74.67%**, leaving a **$380K revenue gap**.
+
+## Segment Performance
+
+Small Business had the stronger win rate:
+
+- Small Business: **28%**
+- Mid-Market: **20%**
+
+However, Mid-Market generated significantly larger average won deals:
+
+- Small Business: **$15K**
+- Mid-Market: **$70K**
+
+## Deal Slippage
+
+Overall Closed Won deal slippage was approximately **44.74%**.
+
+Mid-Market had the highest slippage rate:
+
+- Mid-Market: **60%**
+- Small Business: **39.29%**
+
+This created additional risk because Mid-Market deals were substantially larger.
+
+## Forecast Reliability
+
+Forecast ARR realization was low for several forecast categories.
+
+Commit ARR realization was only about **13%**, indicating that the forecast was overly optimistic relative to actual outcomes.
+
+## Retention
+
+Overall Net Revenue Retention was **93.06%**.
+
+This means existing customer revenue declined after accounting for churn, contraction, and expansion.
+
+## Churn
+
+The largest churn drivers were:
+
+- Budget Reduction: **$162K**
+- Low Adoption: **$128K**
+
+## Q3 Outlook
+
+CloudFlow entered Q3 with:
+
+- **$4.40M opening pipeline**
+- **$1.60M Q3 target**
+- **2.75x pipeline coverage**
+
+Forecast scenarios ranged from:
+
+**$1.23M Conservative → $1.98M Expected → $2.81M Optimistic**
+
+---
+
+# Recommendations
+
+## 1. Improve Lead Funnel Performance
+
+### Action
+
+Focus more attention on lead sources that successfully convert from SQL into real Sales opportunities.
+
+### What to Do
+
+Do not evaluate sources only by the number of leads they generate.
+
+Compare lead volume with:
+
+- SQL conversion
+- Opportunity creation
+- Closed Won performance
+
+Reduce focus on sources that generate many leads but few real opportunities.
+
+---
+
+## 2. Improve Forecast Discipline
+
+### Action
+
+Tighten the criteria used to classify opportunities as Commit and review forecast categories regularly.
+
+### What to Do
+
+Do not move a deal into **Commit** unless there is strong evidence that it will close.
+
+Review:
+
+- Pipeline
+- Best Case
+- Commit
+
+on a regular basis and challenge opportunities that do not have clear next steps or realistic close dates.
+
+---
+
+## 3. Reduce Deal Slippage
+
+### Action
+
+Identify opportunities at risk of missing expected close dates before they slip.
+
+### What to Do
+
+Pay particular attention to Mid-Market opportunities because:
+
+- they have higher ARR,
+- and they experienced the highest Q2 slippage rate.
+
+Sales should proactively review high-value opportunities approaching their expected close date.
+
+---
+
+## 4. Improve Small Business Retention
+
+### Action
+
+Prioritize customers showing low adoption or other signs of renewal risk.
+
+### What to Do
+
+Identify customers who are not using the product enough before renewal.
+
+Customer Success should contact these customers early and attempt to improve adoption before the renewal conversation begins.
+
+---
+
+## 5. Prioritize the Q3 Pipeline
+
+### Action
+
+Focus Sales attention on high-value, late-stage opportunities that have the greatest probability of contributing to the $1.60M Q3 target.
+
+### What to Do
+
+Do not treat all **77 Q3 opportunities** equally.
+
+Prioritize opportunities based on:
+
+- Deal size
+- Current stage
+- Forecast category
+- Close-date confidence
+- Recent activity
+
+The objective is to protect the deals most likely to convert into Q3 revenue.
+
+---
+
+# What I Learned From This Project
+
+This project helped me understand that Revenue Operations analysis is not about one metric.
+
+Missing a revenue target can be caused by multiple connected factors:
+
+- weak lead quality,
+- funnel conversion,
+- Sales execution,
+- deal timing,
+- forecasting,
+- customer churn,
+- and pipeline quality.
+
+I also learned that a large pipeline does not automatically mean a company will hit its target.
+
+Pipeline needs to be evaluated together with:
+
+- win rates,
+- forecast reliability,
+- deal slippage,
+- segment performance,
+- and historical execution.
+
+From a SQL perspective, this project gave me practical experience with:
+
+- CTEs
+- `CASE WHEN`
+- conditional aggregation
+- `COUNT`
+- `SUM`
+- `AVG`
+- conversion-rate calculations
+- `DATE_DIFF`
+- joins
+- `CROSS JOIN`
+- funnel analysis
+- pipeline analysis
+- retention metrics
+- forecast scenario modeling
+
+Most importantly, I practiced moving beyond SQL output and translating the results into:
+
+**Business Question → Analysis → Insight → Recommendation**
+
+---
+
+# Project Files
+
+- [`sql/CloudFlow_RevOps_Full_Analysis.sql`](sql/CloudFlow_RevOps_Full_Analysis.sql) — complete SQL analysis
+- `CloudFlow_Executive_Summary.pdf` — executive summary with key findings and recommendations
+- `images/CloudFlow_RevOps_Dashboard.png` — Looker Studio dashboard
+
+---
+
+# Skills Demonstrated
+
+**SQL • BigQuery • Revenue Operations • Funnel Analysis • Sales Analytics • Pipeline Analysis • Forecasting • Deal Slippage Analysis • Retention Analysis • Churn Analysis • Looker Studio • Business Recommendations**
+
