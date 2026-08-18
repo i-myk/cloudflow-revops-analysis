@@ -888,7 +888,12 @@ The dashboard includes:
 - Churned ARR by Reason
 - Q3 Forecast Scenarios
 
-<!-- Replace the path below with your actual dashboard image path -->
+
+## 🔗 Live Dashboard
+
+🚀 **[Open Looker Studio Dashboard](https://datastudio.google.com/reporting/8404c542-2a3b-4ff0-856b-8c911c7489b0)** 
+
+---
 
 ![CloudFlow Revenue Operations Dashboard](images/CloudFlow_RevOps_Dashboard.png)
 
