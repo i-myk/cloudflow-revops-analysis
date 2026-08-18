@@ -1,69 +1,77 @@
-# CloudFlow Revenue Operations Analysis
+# CloudFlow Revenue Operations Analytics Project
 
-Revenue Operations analysis of Q2 2026 performance and Q3 pipeline for a fictional B2B SaaS company.
+A Revenue Operations analytics project built with Google BigQuery, SQL, and Looker Studio.
 
-The goal of this project was to understand why CloudFlow missed its Q2 New ARR target and identify actions that could improve sales performance, forecasting, retention, and Q3 execution.
+This project analyzes Q2 2026 revenue performance for CloudFlow, a fictional B2B SaaS company, and builds a data-driven outlook for Q3.
+
+The goal of the project is not only to calculate business metrics, but to understand why the company missed its revenue target and identify the areas that should receive the most attention going into Q3.
+
+The analysis follows the revenue journey from leads and sales opportunities through closed revenue, forecasting, deal slippage, customer retention, and Q3 pipeline.
+
+---
 
 ## Business Problem
 
-CloudFlow had a Q2 New ARR target of $1.5M but generated $1.12M, reaching 74.67% of target and leaving a $380K revenue gap.
+CloudFlow had a Q2 2026 New ARR target of **$1.50M**, but finished the quarter with only **$1.12M in Actual New ARR**.
 
-The analysis focused on:
+This resulted in:
 
-- Revenue performance vs. target
-- Lead funnel and SQL → Opportunity conversion
-- Sales performance by customer segment
-- Deal slippage
+- **Target:** $1.50M
+- **Actual New ARR:** $1.12M
+- **Revenue Gap:** $380K
+- **Target Attainment:** 74.67%
+
+The main business question became:
+
+> Why did CloudFlow miss its Q2 revenue target, and what should the company focus on to improve Q3 performance?
+
+To answer this, I analyzed several areas of the revenue process:
+
+- Lead quality and conversion
+- Sales funnel performance
+- Customer segment performance
+- Sales execution and deal slippage
 - Forecast reliability
 - Customer retention and churn
-- Q3 pipeline health and forecast scenarios
+- Q3 opening pipeline
+- Q3 forecast scenarios
 
-## Key Findings
+---
 
-- Q2 New ARR: **$1.12M vs. $1.50M target 74.67% attainment)**
-- Revenue gap: **$380K**
-- Small Business win rate: **28%**
-- Mid-Market win rate: **20%**, with higher deal values
-- **44.74%** of won deals closed later than expected
-- Mid-Market deal slippage reached **60%**
-- Only **14.39%** of Commit opportunities became Closed Won
-- Overall NRR: **93.06%**
-- Small Business NRR: **84.33%**
-- Main churn drivers: **Budget Reduction ($162K)** and **Low Adoption ($128K)**
+## Tech Stack
 
-## Q3 Outlook
+- **Data Warehouse:** Google BigQuery
+- **Language:** SQL
+- **Visualization:** Looker Studio
+- **Version Control:** Git & GitHub
 
-| Metric | Result |
-|---|---:|
-| Q3 Target | $1.60M |
-| Opening Pipeline | $4.40M |
-| Pipeline Coverage | 2.75x |
-| Conservative Forecast | $1.233M |
-| Expected Forecast | $1.978M |
-| Optimistic Forecast | $2.813M |
+---
 
-The expected scenario is above the Q3 target, but historical forecast performance and deal slippage indicate execution risk.
+## Analytical Approach
 
-## Recommendations
+I structured the analysis as a sequence of business questions rather than starting directly with dashboard creation.
 
-1. **Improve Lead Funnel Performance** — focus on lead sources that generate stronger SQL → Opportunity conversion.
-2. **Improve Forecast Discipline** — tighten Commit criteria and review forecast categories weekly.
-3. **Reduce Deal Slippage** — identify at-risk opportunities before expected close dates, especially in Mid-Market.
-4. **Improve Small Business Retention** — prioritize low-adoption and at-risk customers before renewal.
-5. **Prioritize Q3 Pipeline** — focus Sales on high-value, late-stage opportunities most likely to close.
+The process was:
 
-## Tools Used
+**Revenue Target → Actual Performance → Revenue Gap → Lead Quality → Funnel Conversion → Segment Performance → Forecast Reliability → Deal Slippage → Retention → Q3 Pipeline → Q3 Forecast**
 
-- Google BigQuery
-- SQL
-- Excel
-- GitHub
+This allowed me to move from identifying the revenue problem to investigating possible causes and finally evaluating the outlook for the next quarter.
 
-## Project Files
+---
 
-- `sql/CloudFlow_RevOps_Full_Analysis.sql` — complete SQL analysis
-- `CloudFlow_Executive_Summary.pdf` — executive summary with findings and recommendations
+# Step 1: Establish the Q2 Revenue Baseline
 
-## Skills Demonstrated
+Before analyzing leads, sales execution, or forecasting, I first needed to understand the basic revenue performance of the company.
 
-SQL analysis • Revenue Operations • Sales funnel analysis • Forecasting • Pipeline analysis • Retention analysis • Business recommendations
+The first questions were:
+
+1. What was the Q2 revenue target?
+2. How much New ARR was actually closed?
+3. What was the revenue gap?
+4. What percentage of the target was achieved?
+
+## Why I Started Here
+
+Without establishing the revenue baseline, it would be difficult to evaluate whether problems in the funnel, forecasting, or customer segments were materially affecting company performance.
+
+The baseline gives me a clear starting point for the rest of the analysis.
