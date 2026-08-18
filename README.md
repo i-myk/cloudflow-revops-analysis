@@ -234,19 +234,12 @@ SELECT
   COUNT(*) AS total_leads,
   COUNT(MQL_Date) AS mqls,
   COUNT(SQL_Date) AS sqls,
-
   ROUND(COUNT(MQL_Date) * 100.0 / COUNT(*),2) AS lead_to_mql_rate,
-
   ROUND(COUNT(SQL_Date) * 100.0 / COUNT(*),2) AS lead_to_sql_rate,
-
   ROUND(COUNT(SQL_Date) * 100.0 / COUNT(MQL_Date),2) AS mql_to_sql_rate
-
 FROM `fifth-flash-489402-h9.cloudflow_revops.leads`
-
 WHERE Lead_Cohort_Quarter = 'Q2 2026'
-
 GROUP BY Lead_Source_Raw
-
 ORDER BY mql_to_sql_rate DESC;
 ```
 
@@ -279,22 +272,14 @@ SELECT
   COUNT(MQL_Date) AS mqls,
   COUNT(SQL_Date) AS sqls,
   COUNT(Linked_Opportunity_ID) AS opportunities,
-
   ROUND(COUNT(MQL_Date) * 100.0 / COUNT(*),2) AS lead_to_mql_rate,
-
   ROUND(COUNT(SQL_Date) * 100.0 / COUNT(*),2) AS lead_to_sql_rate,
-
   ROUND(COUNT(SQL_Date) * 100.0 / COUNT(MQL_Date),2) AS mql_to_sql_rate,
-
   ROUND(COUNT(Linked_Opportunity_ID) * 100.0 / COUNT(SQL_Date),2)
     AS sql_to_opportunity_rate
-
 FROM `fifth-flash-489402-h9.cloudflow_revops.leads`
-
 WHERE Lead_Cohort_Quarter = 'Q2 2026'
-
 GROUP BY Lead_Source_Raw
-
 ORDER BY sql_to_opportunity_rate DESC;
 ```
 
@@ -321,39 +306,16 @@ The goal was to analyze the full funnel:
 ```sql
 SELECT
   l.Lead_Source_Raw,
-
   COUNT(*) AS total_leads,
-
   COUNT(l.Linked_Opportunity_ID) AS opportunities,
 
-  COUNT(
-    CASE
-      WHEN o.Quarter_End_Status = 'Closed Won' THEN 1
-    END
+  COUNT(CASE WHEN o.Quarter_End_Status = 'Closed Won' THEN 1 END
   ) AS closed_won,
-
-  ROUND(
-    COUNT(l.Linked_Opportunity_ID) * 100.0 / COUNT(*),
-    2
-  ) AS lead_to_opp_rate,
-
-  ROUND(
-    COUNT(
-      CASE
-        WHEN o.Quarter_End_Status = 'Closed Won' THEN 1
-      END
-    ) * 100.0 / COUNT(*),
-    2
-  ) AS lead_to_won_rate,
-
-  ROUND(
-    COUNT(
-      CASE
-        WHEN o.Quarter_End_Status = 'Closed Won' THEN 1
-      END
-    ) * 100.0 / COUNT(l.Linked_Opportunity_ID),
-    2
-  ) AS opp_to_won_rate
+  ROUND(COUNT(l.Linked_Opportunity_ID) * 100.0 / COUNT(*), 2) AS lead_to_opp_rate,
+  ROUND(COUNT(CASE WHEN o.Quarter_End_Status = 'Closed Won' THEN 1 END) * 100.0
+  / COUNT(*), 2) AS lead_to_won_rate,
+  ROUND(COUNT(CASE WHEN o.Quarter_End_Status = 'Closed Won' THEN 1 END) * 100.0
+  / COUNT(l.Linked_Opportunity_ID),2) AS opp_to_won_rate
 
 FROM `fifth-flash-489402-h9.cloudflow_revops.leads` AS l
 
@@ -391,17 +353,8 @@ Sales cycle tells me **how long** they take to close.
 SELECT
   l.Lead_Source_Raw,
   COUNT(*) AS closed_won_deals,
-
-  ROUND(
-    AVG(
-      DATE_DIFF(
-        o.Actual_Close_Date,
-        l.Lead_Created_Date,
-        DAY
-      )
-    ),
-    2
-  ) AS avg_days_to_close
+  ROUND(AVG(DATE_DIFF( o.Actual_Close_Date,l.Lead_Created_Date, DAY)),2)
+  AS avg_days_to_close
 
 FROM `fifth-flash-489402-h9.cloudflow_revops.leads` l
 
@@ -439,29 +392,12 @@ SELECT
   Customer_Segment,
   COUNT(*) AS opportunities,
 
-  COUNT(
-    CASE
-      WHEN Quarter_End_Status = 'Closed Won' THEN 1
-    END
-  ) AS closed_won,
+  COUNT(CASE WHEN Quarter_End_Status = 'Closed Won' THEN 1 END) AS closed_won,
+  SUM(CASE WHEN Quarter_End_Status = 'Closed Won'
+      THEN Opportunity_ARR ELSE 0 END) AS won_arr,
 
-  SUM(
-    CASE
-      WHEN Quarter_End_Status = 'Closed Won'
-      THEN Opportunity_ARR
-      ELSE 0
-    END
-  ) AS won_arr,
-
-  ROUND(
-    COUNT(
-      CASE
-        WHEN Quarter_End_Status = 'Closed Won' THEN 1
-      END
-    ) * 100.0 / COUNT(*),
-    2
-  ) AS win_rate,
-
+  ROUND(COUNT(CASE WHEN Quarter_End_Status = 'Closed Won' THEN 1 END) * 100.0
+  / COUNT(*),2) AS win_rate,
   ROUND(AVG(Opportunity_ARR),2) AS avg_deal_size
 
 FROM `fifth-flash-489402-h9.cloudflow_revops.opportunities`
@@ -508,30 +444,13 @@ SELECT
   Account_Executive,
   COUNT(*) AS opportunities,
 
-  COUNT(
-    CASE
-      WHEN Quarter_End_Status = 'Closed Won' THEN 1
-    END
-  ) AS closed_won,
+  COUNT(CASE WHEN Quarter_End_Status = 'Closed Won' THEN 1 END) AS closed_won,
 
-  ROUND(
-    SUM(
-      CASE
-        WHEN Quarter_End_Status = 'Closed Won'
-        THEN Opportunity_ARR
-      END
-    ),
-    2
-  ) AS closed_won_arr,
+  ROUND(SUM(CASE WHEN Quarter_End_Status = 'Closed Won' THEN Opportunity_ARR END),2)
+  AS closed_won_arr,
 
-  ROUND(
-    COUNT(
-      CASE
-        WHEN Quarter_End_Status = 'Closed Won' THEN 1
-      END
-    ) * 100.0 / COUNT(*),
-    2
-  ) AS win_rate,
+  ROUND(COUNT(CASE WHEN Quarter_End_Status = 'Closed Won' THEN 1 END) * 100.0
+  / COUNT(*),2) AS win_rate,
 
   ROUND(AVG(Opportunity_ARR),2) AS avg_deal_size
 
@@ -574,10 +493,7 @@ SELECT
 
   ROUND(SUM(Final_Actual_ARR),2) AS actual_arr,
 
-  ROUND(
-    SUM(Final_Actual_ARR) - SUM(Sales_Forecast_ARR),
-    2
-  ) AS variance,
+  ROUND(SUM(Final_Actual_ARR) - SUM(Sales_Forecast_ARR),2) AS variance,
 
   ROUND(
     SUM(Final_Actual_ARR) * 100 /
@@ -631,22 +547,12 @@ I defined a slipped deal as:
 SELECT
   COUNT(*) AS total_closed_deals,
 
-  COUNT(
-    CASE
-      WHEN Actual_Close_Date > Expected_Close_Date
-      THEN 1
-    END
+  COUNT(CASE WHEN Actual_Close_Date > Expected_Close_Date THEN 1 END
   ) AS slipped_deals,
 
-  ROUND(
-    COUNT(
-      CASE
+  ROUND( COUNT(CASE
         WHEN Actual_Close_Date > Expected_Close_Date
-        THEN 1
-      END
-    ) * 100.0 / COUNT(*),
-    2
-  ) AS slippage_rate
+        THEN 1 END) * 100.0 / COUNT(*), 2) AS slippage_rate
 
 FROM `fifth-flash-489402-h9.cloudflow_revops.opportunities`
 
@@ -673,35 +579,16 @@ SELECT
   Customer_Segment,
   COUNT(*) AS closed_won_deals,
 
-  COUNT(
-    CASE
-      WHEN Actual_Close_Date > Expected_Close_Date
-      THEN 1
-    END
+  COUNT( CASE WHEN Actual_Close_Date > Expected_Close_Date THEN 1  END
   ) AS slipped_deals,
 
-  ROUND(
-    COUNT(
-      CASE
+  ROUND(COUNT(CASE
         WHEN Actual_Close_Date > Expected_Close_Date
-        THEN 1
-      END
-    ) * 100.0 / COUNT(*),
-    2
-  ) AS slippage_rate,
+        THEN 1 END) * 100.0
+  / COUNT(*), 2) AS slippage_rate,
 
-  ROUND(
-    AVG(
-      CASE
-        WHEN Actual_Close_Date > Expected_Close_Date
-        THEN DATE_DIFF(
-          Actual_Close_Date,
-          Expected_Close_Date,
-          DAY
-        )
-      END
-    ),
-    2
+  ROUND(AVG(CASE WHEN Actual_Close_Date > Expected_Close_Date
+        THEN DATE_DIFF(Actual_Close_Date, Expected_Close_Date, DAY) END),2
   ) AS avg_days_slipped
 
 FROM `fifth-flash-489402-h9.cloudflow_revops.opportunities`
@@ -760,9 +647,7 @@ I analyzed:
 SELECT
   ROUND(
     SUM(Ending_ARR) * 100.0 /
-    SUM(ARR_Due_for_Renewal),
-    2
-  ) AS net_revenue_retention
+    SUM(ARR_Due_for_Renewal),2) AS net_revenue_retention
 
 FROM `fifth-flash-489402-h9.cloudflow_revops.customers_renewals_q2`;
 ```
@@ -938,50 +823,23 @@ Assumptions:
 ```sql
 SELECT
 
-  ROUND(
-    SUM(
-      CASE
-        WHEN Forecast_Category = 'Commit'
-          THEN Opportunity_ARR * 0.50
-        WHEN Forecast_Category = 'Best Case'
-          THEN Opportunity_ARR * 0.20
-        WHEN Forecast_Category = 'Pipeline'
-          THEN Opportunity_ARR * 0.05
-        ELSE 0
-      END
-    ),
-    2
-  ) AS conservative_forecast,
+  ROUND(SUM(CASE
+        WHEN Forecast_Category = 'Commit' THEN Opportunity_ARR * 0.50
+        WHEN Forecast_Category = 'Best Case' THEN Opportunity_ARR * 0.20
+        WHEN Forecast_Category = 'Pipeline' THEN Opportunity_ARR * 0.05
+         ELSE 0 END),2) AS conservative_forecast,
 
-  ROUND(
-    SUM(
-      CASE
-        WHEN Forecast_Category = 'Commit'
-          THEN Opportunity_ARR * 0.70
-        WHEN Forecast_Category = 'Best Case'
-          THEN Opportunity_ARR * 0.40
-        WHEN Forecast_Category = 'Pipeline'
-          THEN Opportunity_ARR * 0.10
-        ELSE 0
-      END
-    ),
-    2
-  ) AS expected_forecast,
+  ROUND(SUM(CASE
+        WHEN Forecast_Category = 'Commit' THEN Opportunity_ARR * 0.70
+        WHEN Forecast_Category = 'Best Case' THEN Opportunity_ARR * 0.40
+        WHEN Forecast_Category = 'Pipeline' THEN Opportunity_ARR * 0.10
+        ELSE 0 END),2) AS expected_forecast,
 
-  ROUND(
-    SUM(
-      CASE
-        WHEN Forecast_Category = 'Commit'
-          THEN Opportunity_ARR * 0.90
-        WHEN Forecast_Category = 'Best Case'
-          THEN Opportunity_ARR * 0.60
-        WHEN Forecast_Category = 'Pipeline'
-          THEN Opportunity_ARR * 0.25
-        ELSE 0
-      END
-    ),
-    2
-  ) AS optimistic_forecast
+  ROUND(SUM(CASE
+        WHEN Forecast_Category = 'Commit' THEN Opportunity_ARR * 0.90
+        WHEN Forecast_Category = 'Best Case' THEN Opportunity_ARR * 0.60
+        WHEN Forecast_Category = 'Pipeline' THEN Opportunity_ARR * 0.25
+        ELSE 0 END),2) AS optimistic_forecast
 
 FROM `fifth-flash-489402-h9.cloudflow_revops.q3_opening_pipeline`;
 ```
