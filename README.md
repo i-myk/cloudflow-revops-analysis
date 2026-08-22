@@ -643,6 +643,37 @@ AE-level analysis helps identify:
 - larger average deals,
 - and potential coaching opportunities.
 
+
+
+### Query Result
+
+![Q2 Account Executive Performance](images/account_executive_performance.png)
+
+### What I Found
+
+Performance varied significantly across Account Executives.
+
+- **Ava Chen** won the most opportunities (**11**) and had the highest win rate at **35.48%**.
+- **Ben Ortiz** managed the largest number of opportunities (**40**) but converted **22.50%** of them into Closed Won.
+- **Daniel Kim** won only **4 opportunities**, but generated the highest Closed Won ARR at **$290K**.
+- **Elena Park** also won **4 opportunities** and generated **$250K** in Closed Won ARR with a **30.77%** win rate.
+- **Marcus Lee** had the lowest win rate at **9.52%**, despite working with the largest average opportunity size.
+
+### Business Interpretation
+
+The analysis showed that AE performance should not be evaluated using a single metric.
+
+For example, Ava Chen led in number of wins and win rate, while Daniel Kim generated the highest Closed Won ARR from fewer deals.
+
+This indicates that seller performance depends on a combination of:
+
+- **Win Rate** — how efficiently opportunities are converted.
+- **Closed Won ARR** — how much revenue is generated.
+- **Deal Size** — the value of opportunities being managed.
+- **Opportunity Volume** — the size of the seller's pipeline.
+
+This type of analysis can help Revenue Operations identify top performers, understand differences in selling patterns, and identify potential coaching opportunities.
+
 ---
 
 # Step 10: Evaluate Forecast Reliability
