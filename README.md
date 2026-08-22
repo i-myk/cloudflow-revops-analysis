@@ -438,6 +438,35 @@ Using a `LEFT JOIN` allows me to keep all leads in the analysis, including leads
 
 If I used an `INNER JOIN`, those non-converting leads would disappear and the funnel conversion rates could look artificially better.
 
+
+
+### Query Result
+
+![Q2 Lead to Opportunity to Closed Won Funnel](images/lead_to_closed_won_funnel.png)
+
+### What I Found
+
+The full-funnel analysis showed that lead sources differed significantly not only in pipeline creation, but also in their ability to generate Closed Won opportunities.
+
+- **Partner Referral** showed strong overall funnel performance: **22.95%** of leads became opportunities and **8.20%** became Closed Won.
+- **Partner Referrals** converted **13.79%** of leads into opportunities and **5.17%** into Closed Won.
+- **Organic** generated the most Closed Won opportunities among the displayed sources (**8**) and had the highest Opportunity → Won rate at **44.44%**.
+- **SEO** generated **23 opportunities**, the highest opportunity count, but only **5** became Closed Won, resulting in a **21.74%** Opportunity → Won rate.
+- Paid channels generated high lead volume but very little final revenue conversion. For example, **Paid Social Media** generated **285 leads**, but only **1 Closed Won** opportunity.
+- Some sources such as **Outbound** and **Events** generated opportunities but had **no Closed Won opportunities** in this Q2 cohort.
+
+### Business Interpretation
+
+This analysis confirmed that lead volume alone is not a reliable measure of channel performance.
+
+Some sources generated hundreds of leads but produced very few Closed Won opportunities, while Partner Referral generated much lower volume but showed substantially stronger end-to-end conversion.
+
+By connecting the Leads and Opportunities tables, I was able to evaluate acquisition sources based on their contribution to the full Sales funnel:
+
+**Lead → Opportunity → Closed Won**
+
+This provides a more meaningful view of lead quality because the analysis follows leads beyond Marketing qualification and into actual Sales outcomes.
+
 ---
 
 # Step 7: Measure Sales Cycle by Lead Source
