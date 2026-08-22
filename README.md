@@ -795,13 +795,17 @@ WHERE Analysis_Quarter = 'Q2 2026'
   AND Quarter_End_Status = 'Closed Won';
 ```
 
-## Result
+### Query Result
 
-Overall Q2 Closed Won deal slippage was approximately:
+![Overall Q2 Deal Slippage](images/deal_slippage_overall.png)
 
-**44.74%**
+The query showed:
 
-This means almost half of the opportunities that eventually became Closed Won closed later than originally expected.
+- **Closed Won Deals:** 38
+- **Slipped Deals:** 17
+- **Slippage Rate:** 44.74%
+
+This means that nearly half of the deals that became Closed Won closed later than their expected close date.
 
 ---
 
@@ -843,15 +847,36 @@ ORDER BY slippage_rate DESC;
 | Mid-Market | 60.00% |
 | Small Business | 39.29% |
 
-## What I Learned
+### Query Result
 
-Mid-Market had the highest deal slippage.
+![Q2 Deal Slippage by Customer Segment](images/deal_slippage_by_segment.png)
 
-This is especially important because Mid-Market deals also have much larger average ARR.
+### What I Found
 
-A delayed $70K opportunity has a much larger impact on quarterly revenue than a delayed $15K opportunity.
+Deal slippage differed significantly between customer segments.
 
-This made Mid-Market pipeline execution one of the major areas to monitor going into Q3.
+- **Mid-Market:** 60.00% slippage rate
+- **Small Business:** 39.29% slippage rate
+
+Mid-Market opportunities were substantially more likely to close later than expected.
+
+### Business Interpretation
+
+This finding is especially important because Mid-Market deals also generated much larger average won ARR.
+
+The combination of:
+
+- larger deal size,
+- lower win rate,
+- and higher deal slippage
+
+makes Mid-Market execution a significant revenue risk.
+
+A delayed Mid-Market opportunity can have a much larger impact on quarterly ARR than a delayed Small Business opportunity.
+
+This suggests that Q3 pipeline management should place additional attention on Mid-Market deals, especially expected close dates, next steps, and deal progression.
+
+> **Mid-Market represented higher revenue potential, but also greater execution and timing risk.**
 
 ---
 
