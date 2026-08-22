@@ -1256,7 +1256,7 @@ This created additional risk because Mid-Market deals were substantially larger.
 
 Forecast ARR realization was low for several forecast categories.
 
-Commit ARR realization was only about **13%**, indicating that the forecast was overly optimistic relative to actual outcomes.
+Commit ARR realization was only about **13%**, suggesting that Commit opportunities were significantly overestimated relative to actual outcomes.
 
 ## Retention
 
@@ -1344,7 +1344,7 @@ Sales should proactively review high-value opportunities approaching their expec
 
 ---
 
-## 4. Improve Small Business Retention
+## 4. Improve Customer Retention
 
 ### Action
 
@@ -1352,9 +1352,11 @@ Prioritize customers showing low adoption or other signs of renewal risk.
 
 ### What to Do
 
-Identify customers who are not using the product enough before renewal.
+Identify customers with declining or low product adoption before renewal.
 
-Customer Success should contact these customers early and attempt to improve adoption before the renewal conversation begins.
+Customer Success should engage these customers earlier and work to improve adoption before the renewal conversation begins.
+
+Also, churn reasons should be captured consistently so future retention analysis can identify the most important drivers more reliably.
 
 ---
 
@@ -1429,9 +1431,9 @@ Most importantly, I practiced moving beyond SQL output and translating the resul
 
 # Project Files
 
-- [`sql/CloudFlow_RevOps_Full_Analysis.sql`](sql/CloudFlow_RevOps_Full_Analysis.sql) — complete SQL analysis
-- `CloudFlow_Executive_Summary.pdf` — executive summary with key findings and recommendations
-- `images/CloudFlow_RevOps_Dashboard.png` — Looker Studio dashboard
+- [`sql/CloudFlow_RevOps_Full_Analysis.sql`](https://github.com/i-myk/cloudflow-revops-analysis/blob/main/sql/CloudFlow_RevOps_Full_Analysis.sql) — complete SQL analysis
+- [`CloudFlow_Executive_Summary.pdf`](CloudFlow_Executive_Summary.pdf) — executive summary with key findings and recommendations
+- [`images/CloudFlow_RevOps_Dashboard.png`](images/CloudFlow_RevOps_Dashboard.png) — final Looker Studio dashboard
 
 ---
 
