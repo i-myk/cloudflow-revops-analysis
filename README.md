@@ -290,6 +290,32 @@ The conversion rates help identify where qualification is breaking down.
 
 A source may generate many leads but still perform poorly if only a small portion reaches SQL.
 
+
+
+### Query Result
+
+![Q2 MQL to SQL Conversion by Lead Source](images/sql_mql_sql_conversion.png)
+
+### What I Found
+
+Conversion performance varied significantly across lead sources.
+
+- **Partner Referral** showed the strongest qualification performance, with **59.02% Lead → MQL**, **42.62% Lead → SQL**, and **72.22% MQL → SQL** conversion.
+- **Partners** also performed well, with a **63.33% MQL → SQL** conversion rate.
+- **Organic** generated the highest lead volume among the displayed sources (**218 leads**), but only **19.27%** of those leads reached SQL.
+- **SEO** generated **205 leads**, with **18.54%** reaching SQL.
+- **Sales Outbound** showed a relatively low **15.34% Lead → SQL** conversion rate.
+
+This reinforced the earlier finding that **lead volume alone does not indicate lead quality**.
+
+Partner-related sources generated fewer leads but generally showed stronger qualification rates, while higher-volume sources such as Organic and SEO converted a smaller percentage of leads into SQLs.
+
+### Business Interpretation
+
+The results suggest that Marketing should evaluate acquisition channels based on both **volume and downstream conversion**, rather than lead count alone.
+
+The next step was to determine whether qualification was the only issue or whether delays in **Sales follow-up** were also affecting funnel performance.
+
 ---
 
 # Step 5: Measure SQL → Opportunity Conversion
