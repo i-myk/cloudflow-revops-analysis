@@ -1091,45 +1091,33 @@ This led to the next step of my analysis:
 
 # Step 15: Build Q3 Forecast Scenarios
 
-Instead of using one forecast number, I created three scenarios:
+After measuring Q3 pipeline coverage, I wanted to estimate how much of the pipeline could realistically convert into revenue.
 
-- Conservative
-- Expected
-- Optimistic
+Instead of relying on a single forecast number, I created three scenarios:
 
-Each scenario applies different probabilities to:
+- **Conservative**
+- **Expected**
+- **Optimistic**
+
+Each scenario applies different probability assumptions to opportunities based on their forecast category:
 
 - Commit
 - Best Case
 - Pipeline
 
-The purpose is not to say exactly what will happen, but to understand a reasonable range of possible outcomes.
+The goal is not to predict the exact Q3 result, but to create a reasonable range of potential revenue outcomes.
 
 ---
 
-## Conservative Scenario
+## Scenario Assumptions
 
-Assumptions:
+| Forecast Category | Conservative | Expected | Optimistic |
+|---|---:|---:|---:|
+| Commit | 50% | 70% | 90% |
+| Best Case | 20% | 40% | 60% |
+| Pipeline | 5% | 10% | 25% |
 
-- Commit = 50%
-- Best Case = 20%
-- Pipeline = 5%
-
-## Expected Scenario
-
-Assumptions:
-
-- Commit = 70%
-- Best Case = 40%
-- Pipeline = 10%
-
-## Optimistic Scenario
-
-Assumptions:
-
-- Commit = 90%
-- Best Case = 60%
-- Pipeline = 25%
+> These percentages are scenario assumptions used for planning purposes. They are not historical conversion rates.
 
 ### SQL
 
@@ -1137,48 +1125,69 @@ Assumptions:
 SELECT
 
   ROUND(SUM(CASE
-        WHEN Forecast_Category = 'Commit' THEN Opportunity_ARR * 0.50
-        WHEN Forecast_Category = 'Best Case' THEN Opportunity_ARR * 0.20
-        WHEN Forecast_Category = 'Pipeline' THEN Opportunity_ARR * 0.05
-         ELSE 0 END),2) AS conservative_forecast,
+    WHEN Forecast_Category = 'Commit' THEN Opportunity_ARR * 0.50
+    WHEN Forecast_Category = 'Best Case' THEN Opportunity_ARR * 0.20
+    WHEN Forecast_Category = 'Pipeline' THEN Opportunity_ARR * 0.05
+    ELSE 0
+  END), 2) AS conservative_forecast,
 
   ROUND(SUM(CASE
-        WHEN Forecast_Category = 'Commit' THEN Opportunity_ARR * 0.70
-        WHEN Forecast_Category = 'Best Case' THEN Opportunity_ARR * 0.40
-        WHEN Forecast_Category = 'Pipeline' THEN Opportunity_ARR * 0.10
-        ELSE 0 END),2) AS expected_forecast,
+    WHEN Forecast_Category = 'Commit' THEN Opportunity_ARR * 0.70
+    WHEN Forecast_Category = 'Best Case' THEN Opportunity_ARR * 0.40
+    WHEN Forecast_Category = 'Pipeline' THEN Opportunity_ARR * 0.10
+    ELSE 0
+  END), 2) AS expected_forecast,
 
   ROUND(SUM(CASE
-        WHEN Forecast_Category = 'Commit' THEN Opportunity_ARR * 0.90
-        WHEN Forecast_Category = 'Best Case' THEN Opportunity_ARR * 0.60
-        WHEN Forecast_Category = 'Pipeline' THEN Opportunity_ARR * 0.25
-        ELSE 0 END),2) AS optimistic_forecast
+    WHEN Forecast_Category = 'Commit' THEN Opportunity_ARR * 0.90
+    WHEN Forecast_Category = 'Best Case' THEN Opportunity_ARR * 0.60
+    WHEN Forecast_Category = 'Pipeline' THEN Opportunity_ARR * 0.25
+    ELSE 0
+  END), 2) AS optimistic_forecast
 
 FROM `fifth-flash-489402-h9.cloudflow_revops.q3_opening_pipeline`;
 ```
 
+### Query Result
+
+![Q3 Forecast Scenarios](images/q3_forecast_scenarios.png)
+
 ## Result
 
-| Scenario | Q3 Forecast ARR |
-|---|---:|
-| Conservative | $1.233M |
-| Expected | $1.978M |
-| Optimistic | $2.813M |
+| Scenario | Q3 Forecast ARR | vs. $1.60M Target |
+|---|---:|---:|
+| Conservative | $1.23M | Below Target |
+| Expected | $1.98M | Above Target |
+| Optimistic | $2.81M | Above Target |
+
+## How I Interpret the Scenarios
+
+The **Conservative scenario produces approximately $1.23M**, which would fall below the $1.60M Q3 target.
+
+The **Expected scenario produces approximately $1.98M**, which would exceed the target.
+
+The **Optimistic scenario produces approximately $2.81M**, significantly above the target.
+
+This shows why looking only at the $4.40M opening pipeline would be misleading.
+
+Not every opportunity has the same probability of closing.
 
 ## What I Learned
 
-The Expected and Optimistic scenarios exceed the **$1.60M Q3 target**.
+CloudFlow appears to have enough pipeline to reach the Q3 target, but the result depends heavily on execution.
 
-However, the Conservative scenario falls below target.
+The Q2 analysis identified several risks that could push performance toward the Conservative scenario:
 
-This means CloudFlow has enough pipeline on paper, but execution quality matters.
+- deal slippage,
+- poor forecast realization,
+- large Mid-Market opportunities carrying more revenue risk,
+- and pipeline opportunities failing to progress.
 
-Q3 performance will depend heavily on:
+Therefore, Q3 should focus on converting high-value opportunities while improving forecast discipline and reducing deal slippage.
 
-- preventing deal slippage,
-- focusing on high-value late-stage opportunities,
-- improving forecast discipline,
-- and converting pipeline into actual Closed Won ARR.
+### Business Takeaway
+
+> **Pipeline volume is sufficient, but execution determines whether CloudFlow reaches the $1.60M Q3 target.**
 
 ---
 
