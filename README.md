@@ -234,6 +234,25 @@ A source may generate many leads, but those leads may fail to progress through t
 
 Therefore, I wanted to compare **lead volume with downstream conversion performance**.
 
+
+### Query Result
+
+![Q2 Lead Quality by Source](images/sql_lead_quality_by_source.png)
+
+### What I Found
+
+Lead quality varied across acquisition sources.
+
+- **Partner Referral** had the highest average lead score at **64.48**
+- **Partner Referrals** averaged **61.74**
+- **Partners** averaged **59.51**
+- **Organic** generated a much larger lead volume (**218 leads**) but had a lower average lead score of **55.95**
+- **Organic Search** generated **197 leads** with an average score of **55.76**
+
+This showed that the sources generating the most leads were not necessarily the sources generating the highest-scoring leads.
+
+However, lead score alone does not prove lead quality. I therefore continued the analysis by looking at how leads progressed through the funnel from **Lead → MQL → SQL → Opportunity**.
+
 ---
 
 # Step 4: Measure MQL → SQL Conversion
