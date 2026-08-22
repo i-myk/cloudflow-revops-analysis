@@ -567,27 +567,38 @@ GROUP BY Customer_Segment
 ORDER BY won_arr DESC;
 ```
 
-## Result
+### Query Result
 
-- **Small Business Win Rate:** 28%
-- **Mid-Market Win Rate:** 20%
+![Q2 Customer Segment Performance](images/customer_segment_performance.png)
 
-In the dashboard analysis, average won deal ARR was approximately:
+### What I Found
 
-- **Small Business:** $15K
-- **Mid-Market:** $70K
+Customer segment performance showed a clear tradeoff between conversion rate and deal value.
 
-## What I Learned
+- **Small Business** had **100 opportunities** and won **28**, resulting in a **28% win rate**.
+- **Mid-Market** had **50 opportunities** and won **10**, resulting in a lower **20% win rate**.
+- Despite the lower win rate, Mid-Market generated **$700K in Won ARR**, compared with **$420K from Small Business**.
 
-Small Business converted opportunities at a higher rate.
+The query above also shows average opportunity size across all Q2 opportunities:
 
-However, Mid-Market deals were substantially more valuable.
+- **Mid-Market:** $78K
+- **Small Business:** $17K
 
-This created an important tradeoff:
+For the dashboard, I separately calculated average deal size using only **Closed Won opportunities**:
 
-> Small Business delivered better conversion, while Mid-Market represented significantly more ARR per successful deal.
+- **Mid-Market Average Won Deal ARR:** $70K
+- **Small Business Average Won Deal ARR:** $15K
 
-Therefore, improving execution on Mid-Market opportunities could have a large revenue impact.
+### Business Interpretation
+
+Small Business converted opportunities more efficiently, but Mid-Market produced significantly more revenue per successful deal.
+
+This means the two segments present different opportunities:
+
+- **Small Business** provides stronger conversion efficiency.
+- **Mid-Market** provides greater revenue potential per win.
+
+The lower Mid-Market win rate therefore represents an important Revenue Operations opportunity. Improving conversion and execution on these larger deals could have a significant impact on total ARR.
 
 ---
 
