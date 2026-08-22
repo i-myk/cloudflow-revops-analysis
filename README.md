@@ -727,6 +727,41 @@ Low realization suggests that forecasting was overly optimistic or Commit criter
 
 This became one of the main Revenue Operations findings.
 
+
+
+### Query Result
+
+![Q2 Forecast Reliability by Category](images/forecast_reliability.png)
+
+### What I Found
+
+Forecast realization varied significantly across forecast categories.
+
+- **Closed:** $3.90M forecast vs. $3.90M actual — **100% realization**
+- **Pipeline:** $440K forecast vs. $307K actual — approximately **70% realization**
+- **Commit:** $5.81M forecast vs. only $731K actual — approximately **13% realization**
+- **Best Case:** $3.71M forecast vs. only $190K actual — approximately **5% realization**
+
+The largest issue was the **Commit** category.
+
+Commit represented approximately **$5.81M** in forecast ARR, but only about **$731K** was ultimately realized.
+
+### Business Interpretation
+
+A Commit opportunity should represent a relatively high-confidence deal.
+
+However, only about **13% of Commit forecast ARR was realized**, indicating that the forecast was substantially more optimistic than the final revenue outcome.
+
+Best Case also showed very low realization at approximately **5%**.
+
+This suggests that forecast categories were not consistently aligned with actual deal outcomes and that qualification criteria may need to be reviewed.
+
+For Revenue Operations, this creates a forecasting risk because leadership may make planning decisions based on pipeline that is unlikely to convert at the expected level.
+
+This became one of the key findings of the Q2 analysis:
+
+> **Pipeline existed, but forecast confidence did not consistently translate into actual revenue.**
+
 ---
 
 # Step 11: Analyze Deal Slippage
