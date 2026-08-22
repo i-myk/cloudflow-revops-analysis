@@ -354,6 +354,42 @@ A source can produce many SQLs, but if those SQLs rarely become opportunities, t
 
 This helped me move beyond simple lead volume and evaluate **lead quality based on actual pipeline creation**.
 
+
+
+### Query Result
+
+![Q2 SQL to Opportunity Conversion by Lead Source](images/sql_to_opportunity_conversion.png)
+
+### What I Found
+
+The results showed that lead sources performed very differently when converting qualified leads into actual Sales opportunities.
+
+- **Outbound** had the highest SQL → Opportunity conversion rate at **63.16%**.
+- **Events** followed closely at **61.54%**.
+- **SEO** converted **60.53%** of SQLs into opportunities.
+- **Partner Referral** had the strongest earlier-stage qualification performance and still converted **53.85%** of SQLs into opportunities.
+- **Organic** generated a high volume of leads and SQLs, but its SQL → Opportunity conversion rate was lower at **42.86%**.
+- Paid channels performed poorly despite generating the largest lead volumes:
+  - **LinkedIn Paid:** 282 leads, but only 5 opportunities and a **33.33%** SQL → Opportunity rate.
+  - **Paid Social Media:** 285 leads, but only 3 opportunities and a **25.00%** SQL → Opportunity rate.
+  - **Paid Social:** 283 leads, but only 4 opportunities and a **22.22%** SQL → Opportunity rate.
+
+### Business Interpretation
+
+This analysis showed why looking only at lead volume can be misleading.
+
+Some of the highest-volume sources, particularly paid channels, generated many leads but relatively few opportunities.
+
+In contrast, sources such as **Outbound, Events, SEO, and Partner Referral** produced stronger downstream conversion into actual Sales pipeline.
+
+This suggests that Marketing performance should be evaluated across the full qualification funnel:
+
+**Lead → MQL → SQL → Opportunity**
+
+rather than using lead volume as the primary measure of success.
+
+The next step was to analyze whether **Sales follow-up speed and activity** could also be contributing to conversion performance.
+
 ---
 
 # Step 6: Analyze the Full Lead → Opportunity → Closed Won Funnel
