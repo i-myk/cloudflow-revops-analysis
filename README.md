@@ -184,6 +184,24 @@ Pipeline size alone does not guarantee revenue.
 
 I needed to understand the **quality and final outcome of the pipeline**, not simply how many opportunities existed.
 
+
+### Query Result
+
+![Q2 Opportunity Outcomes](images/sql_q2_opportunity_outcomes.png)
+
+### What I Found
+
+The Q2 pipeline contained significant ARR that did not convert into revenue:
+
+- **Closed Won:** 38 opportunities generating **$1.12M ARR**
+- **Open - Slipped:** 32 opportunities representing **$1.78M ARR**
+- **Open - Past Due:** 20 opportunities representing **$680K ARR**
+- **Closed Lost:** 42 opportunities representing **$1.46M ARR**
+- **Removed:** 18 opportunities representing **$560K ARR**
+
+The largest amount of ARR was in **Open - Slipped opportunities ($1.78M)**, which suggested that deal slippage was an important contributor to the Q2 revenue gap.
+
+This led me to investigate **which customer segments were driving the slippage and whether larger deals were more likely to slip.**
 ---
 
 # Step 3: Analyze Lead Quality
