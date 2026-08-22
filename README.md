@@ -504,6 +504,36 @@ Two lead sources can have similar win rates but very different time-to-close.
 
 A source that closes faster can contribute revenue sooner and make quarterly forecasting more predictable.
 
+
+
+### Query Result
+
+![Q2 Sales Cycle by Lead Source](images/lead_source_sales_cycle.png)
+
+### What I Found
+
+Sales cycle length varied significantly across lead sources.
+
+- **Organic** generated the highest number of Closed Won deals (**6**), but had an average sales cycle of **48.5 days**.
+- **SEO** generated **3 Closed Won deals** with a much faster average sales cycle of **17.67 days**.
+- **Partner Referral** also generated **3 wins** and closed in approximately **19 days** on average.
+- **Partners** had the fastest average sales cycle at **12.5 days**, although the result was based on only **2 Closed Won deals**.
+- **Webinars & Events** and **SDR Outbound** had much longer sales cycles at **66.5** and **62 days** respectively.
+
+### Business Interpretation
+
+The results show that lead sources should not be evaluated only by conversion rate or number of wins.
+
+For example, **Organic** generated the most Closed Won deals, but those deals took considerably longer to close than SEO or Partner Referral deals.
+
+This matters for Revenue Operations because longer sales cycles can delay revenue recognition and make quarterly forecasting more difficult.
+
+I also need to be careful when comparing sources with only one or two Closed Won deals, because their average sales cycle is based on a small sample.
+
+This analysis adds another dimension to lead-source performance:
+
+**Lead Quality → Conversion → Closed Won → Time to Revenue**
+
 ---
 
 # Step 8: Compare Customer Segment Performance
