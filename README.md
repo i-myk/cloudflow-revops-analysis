@@ -1005,6 +1005,8 @@ After understanding Q2 performance, I moved to the forward-looking question:
 
 > Does CloudFlow have enough pipeline to reach the Q3 target?
 
+First, I measured the size of the pipeline available at the beginning of Q3.
+
 ### Overall Pipeline SQL
 
 ```sql
@@ -1015,6 +1017,10 @@ SELECT
 FROM `fifth-flash-489402-h9.cloudflow_revops.q3_opening_pipeline`;
 ```
 
+### Query Result
+
+![Q3 Opening Pipeline](images/q3_opening_pipeline.png)
+
 ## Result
 
 - **Q3 Opening Opportunities:** 77
@@ -1023,7 +1029,13 @@ FROM `fifth-flash-489402-h9.cloudflow_revops.q3_opening_pipeline`;
 
 ---
 
-## Pipeline Coverage
+## Calculate Pipeline Coverage
+
+Pipeline ARR alone does not tell me whether the pipeline is sufficient relative to the revenue target.
+
+To measure this, I calculated **Pipeline Coverage**:
+
+> Pipeline Coverage = Pipeline ARR / Revenue Target
 
 ### SQL
 
@@ -1040,25 +1052,40 @@ SELECT
 FROM `fifth-flash-489402-h9.cloudflow_revops.q3_opening_pipeline`;
 ```
 
+### Query Result
+
+![Q3 Pipeline Coverage](images/q3_pipeline_coverage.png)
+
 ## Result
 
 **Pipeline Coverage = 2.75x**
 
-## What Pipeline Coverage Means
+## How I Interpret Pipeline Coverage
 
-CloudFlow entered Q3 with pipeline equal to approximately **2.75 times the revenue target**.
+CloudFlow entered Q3 with **$4.40M of pipeline against a $1.60M target**.
 
-However, this does not mean CloudFlow will automatically hit the target.
+This means the opening pipeline was approximately **2.75 times the Q3 revenue target**.
 
-Q2 analysis showed:
+However, pipeline coverage does not mean that all pipeline ARR will become revenue.
 
-- Deal slippage
-- Low Commit realization
-- Different win rates across segments
+The Q2 analysis already showed several execution risks:
 
-Therefore, the full $4.40M pipeline should not be treated as expected revenue.
+- significant deal slippage,
+- low realization of Commit forecasts,
+- different win rates across customer segments,
+- and larger Mid-Market opportunities carrying greater execution risk.
 
-This is why I created forecast scenarios.
+Therefore, I should not treat the full **$4.40M pipeline as expected Q3 revenue**.
+
+## What I Learned
+
+CloudFlow appears to have enough pipeline volume to potentially support the Q3 target.
+
+The bigger question is **how much of that pipeline is realistically likely to close**.
+
+This led to the next step of my analysis:
+
+> **Instead of assuming the entire pipeline will convert, I created Conservative, Expected, and Optimistic forecast scenarios using different conversion assumptions.**
 
 ---
 
