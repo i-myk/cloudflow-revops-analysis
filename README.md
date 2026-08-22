@@ -912,17 +912,33 @@ SELECT
 FROM `fifth-flash-489402-h9.cloudflow_revops.customers_renewals_q2`;
 ```
 
-## Result
+### Query Result
+
+![Q2 Net Revenue Retention](images/net_revenue_retention.png)
+
+### Result
 
 **Overall NRR = 93.06%**
 
-## How I Interpret NRR
+### How I Interpret NRR
 
-NRR compares the ARR remaining at the end of the renewal period with the ARR that originally came up for renewal.
+Net Revenue Retention measures how much recurring revenue was retained from the existing customer base after accounting for:
 
-An NRR below 100% means that churn and contraction exceeded expansion.
+- churn,
+- contraction,
+- and expansion.
 
-CloudFlow ended the period with less recurring revenue than it started with from this renewal cohort.
+An NRR of **93.06%** means CloudFlow retained approximately 93% of the ARR from the Q2 renewal cohort.
+
+Because NRR is below 100%, revenue lost through churn and contraction was greater than the additional ARR generated through expansion.
+
+### Why This Matters
+
+Even if the company generates new ARR, weak retention can offset part of that growth.
+
+This is why I analyzed retention separately from new customer acquisition:
+
+> **New ARR shows how much revenue the company added, while NRR shows how effectively the company protected and expanded its existing recurring revenue.**
 
 ---
 
