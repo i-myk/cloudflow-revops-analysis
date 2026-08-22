@@ -920,7 +920,7 @@ FROM `fifth-flash-489402-h9.cloudflow_revops.customers_renewals_q2`;
 
 **Overall NRR = 93.06%**
 
-### How I Interpret NRR
+### How I explain NRR
 
 Net Revenue Retention measures how much recurring revenue was retained from the existing customer base after accounting for:
 
@@ -944,7 +944,9 @@ This is why I analyzed retention separately from new customer acquisition:
 
 # Step 13: Identify the Main Churn Reasons
 
-Knowing the churn rate is useful, but Revenue Operations also needs to understand **why customers leave**.
+After analyzing overall retention, I wanted to understand **why customers churned**.
+
+Knowing how much ARR was lost is important, but identifying the reasons behind that loss helps determine which problems may be actionable.
 
 ### SQL
 
@@ -963,29 +965,37 @@ GROUP BY Churn_Reason
 ORDER BY churned_arr DESC;
 ```
 
+### Query Result
+
+![Q2 Churn Reasons](images/churn_reasons.png)
+
 ## Result
 
-| Churn Reason | Churned ARR |
-|---|---:|
-| Budget reduction | $162K |
-| Low adoption | $128K |
-| Reason not provided | $52K |
-| Other | $18K |
+| Churn Reason | Churned Customers | Churned ARR |
+|---|---:|---:|
+| Budget reduction | 5 | $162K |
+| Low adoption | 4 | $128K |
+| Reason not provided | 2 | $52K |
+| Other | 1 | $18K |
+
+> In the raw data, two churned customers had a `NULL` Churn_Reason.  
+> For reporting purposes, I displayed these records as **Reason not provided** in the dashboard.
 
 ## What I Learned
 
-The two largest churn drivers were:
+The largest churn driver was **Budget Reduction**, accounting for $162K in lost ARR.
 
-1. **Budget Reduction**
-2. **Low Adoption**
+The second-largest driver was **Low Adoption**, with $128K in churned ARR.
 
-Budget-related churn may be difficult to prevent completely.
+Budget-related churn may be difficult to prevent completely. Low adoption, however, represents a more actionable customer-success problem.
 
-Low adoption, however, represents a potentially actionable customer-success problem.
+Customers showing low product adoption could potentially be identified earlier so Customer Success can intervene before renewal.
 
-Customers who are not using the product enough should be identified before renewal so Customer Success can intervene earlier.
+I also identified a small **data-quality issue**: two churned customers had no churn reason recorded. Capturing churn reasons consistently would make future retention analysis more reliable.
 
-The missing churn reasons also indicate a small data-quality opportunity: churn reason should ideally be captured consistently.
+### Business Takeaway
+
+> Retention improvement should focus especially on early identification of low-adoption customers, while churn-reason data should be captured more consistently.
 
 ---
 
