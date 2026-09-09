@@ -10,6 +10,47 @@ The analysis follows the revenue journey from leads and sales opportunities thro
 
 ---
 
+
+## Table of Contents
+
+### Project Overview
+- [Business Problem](#business-problem)
+- [Tech Stack](#tech-stack)
+- [Analytical Approach](#analytical-approach)
+
+### Q2 Revenue & Funnel Analysis
+1. [Q2 Revenue Baseline](#step-1-establish-the-q2-revenue-baseline)
+2. [Opportunity Outcomes & Pipeline Health](#step-2-understand-opportunity-outcomes-and-pipeline-health)
+3. [Lead Quality](#step-3-analyze-lead-quality)
+4. [MQL → SQL Conversion](#step-4-measure-mql--sql-conversion)
+5. [SQL → Opportunity Conversion](#step-5-measure-sql--opportunity-conversion)
+6. [Lead → Opportunity → Closed Won Funnel](#step-6-analyze-the-full-lead--opportunity--closed-won-funnel)
+7. [Sales Cycle by Lead Source](#step-7-measure-sales-cycle-by-lead-source)
+
+### Sales & Revenue Performance
+8. [Customer Segment Performance](#step-8-compare-customer-segment-performance)
+9. [Account Executive Performance](#step-9-evaluate-account-executive-performance)
+10. [Forecast Reliability](#step-10-evaluate-forecast-reliability)
+11. [Deal Slippage](#step-11-analyze-deal-slippage)
+
+### Retention & Q3 Outlook
+12. [Customer Retention & Churn](#step-12-analyze-customer-retention-and-churn)
+13. [Main Churn Reasons](#step-13-identify-the-main-churn-reasons)
+14. [Q3 Opening Pipeline](#step-14-evaluate-the-q3-opening-pipeline)
+15. [Q3 Forecast Scenarios](#step-15-build-q3-forecast-scenarios)
+
+### Final Business Assessment
+- [Overall Business Assessment](#overall-business-assessment)
+- [Overall Conclusion](#overall-conclusion)
+- [Final Looker Studio Dashboard](#final-looker-studio-dashboard)
+- [Key Findings](#key-findings)
+- [Recommendations](#recommendations)
+- [What I Learned](#what-i-learned-from-this-project)
+- [Project Files](#project-files)
+- [Skills Demonstrated](#skills-demonstrated)
+
+---
+
 ## Business Problem
 
 CloudFlow had a Q2 2026 New ARR target of **$1.50M**, but finished the quarter with only **$1.12M in Actual New ARR**.
