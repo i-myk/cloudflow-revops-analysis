@@ -1551,7 +1551,7 @@ Most importantly, I practiced moving beyond SQL output and translating the resul
 
 - [Source Dataset (Excel)](https://docs.google.com/spreadsheets/d/1-B6kOJ5NtzlH1tKqt_Wh8GioKKzKrLVk/edit?usp=sharing) — source data used for the analysis
 - [`sql/CloudFlow_RevOps_Full_Analysis.sql`](https://github.com/i-myk/cloudflow-revops-analysis/blob/main/sql/CloudFlow_RevOps_Full_Analysis.sql) — complete SQL analysis
-- `CloudFlow_Executive_Summary.pdf` — executive summary with key findings and recommendations
+- [`CloudFlow_RevOps_Executive_Summary.pdf`](https://github.com/i-myk/cloudflow-revops-analysis/blob/main/sql/CloudFlow_RevOps_Executive_Summary.pdf)  — executive summary with key findings and recommendations
 - `images/CloudFlow_RevOps_Dashboard.png` — Looker Studio dashboard
 
 ---
